@@ -1,13 +1,13 @@
 use axum::{
-    http::StatusCode,
-    response::IntoResponse,
-    routing::{get, post},
-    Json, Router,
+    routing::get,
+    Router,
 };
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
-use std::collections::HashMap;
-use std::sync::{Arc, RwLock};
+
+mod contract_leaderboard;
+use contract_leaderboard::get_contracts;
+
 
 #[derive(Clone, Serialize, Deserialize)]
 struct User {
@@ -17,36 +17,9 @@ struct User {
 
 #[tokio::main]
 async fn main() {
-    let mut users: HashMap<u32, User> = HashMap::new();
-    users.insert(0, User {
-        name: "John Doe".to_string(),
-        email: "john@doe.com".to_string(),
-    });
-    let users_arc = Arc::new(RwLock::new(users));
-
-    let get_users_arc = users_arc.clone();
-    let get_users = || async move {
-        let users = get_users_arc.read().unwrap().clone();
-        Json(users)
-    };
-
-    let create_user_arc = users_arc.clone();
-    let create_user = |Json(payload): Json<User>| async move {
-        let mut users = create_user_arc.write().unwrap();
-        let id = users.len() as u32;
-        users.insert(id, payload);
-        (StatusCode::CREATED, Json(id))
-    };
-
-    async fn index() -> &'static str {
-        "Hello, World!"
-    }
-
-    let tracing_subscriber = tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt::init();
     let app = Router::new()
-        .route("/", get(index))
-        .route("/users", get(get_users))
-        .route("/users", post(create_user));
+        .route("/contracts", get(get_contracts));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     tracing::info!("Listening on {}", addr);
