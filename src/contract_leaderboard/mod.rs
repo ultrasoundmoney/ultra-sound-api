@@ -3,11 +3,11 @@ use axum::{extract::State, Json};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ContractEntry {
-    address: String,
-    base_fees: f64,
-    base_fees_usd: Option<f64>,
+    pub address: String,
+    pub base_fees: f64,
+    pub base_fees_usd: Option<f64>,
 }
 
 pub async fn get_contracts(State(state): State<Arc<AppState>>) -> Json<Vec<ContractEntry>> {
