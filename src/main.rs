@@ -1,9 +1,9 @@
 use std::net::SocketAddr;
+mod app;
 mod contract_leaderboard;
 mod db;
 mod env;
 mod state;
-mod app;
 
 #[tokio::main]
 async fn main() {

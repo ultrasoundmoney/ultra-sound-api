@@ -1,9 +1,9 @@
+use crate::contract_leaderboard::get_contracts;
+use crate::db::get_db_pool;
+use crate::state::AppState;
 use axum::{routing::get, Router};
 use sqlx::PgPool;
 use std::sync::Arc;
-use crate::contract_leaderboard::get_contracts;
-use crate::state::AppState;
-use crate::db::get_db_pool;
 
 pub async fn get_app() -> Router {
     let db_pool = get_db_pool().await;
@@ -19,21 +19,25 @@ fn get_app_with_db_pool(db_pool: PgPool) -> Router {
     app
 }
 
-
 #[cfg(test)]
 mod test {
     use super::*;
-    use tower::ServiceExt;
-    use axum::{
-        body::Body,
-        http::Request,
-    };
     use crate::contract_leaderboard::ContractEntry;
+    use axum::{body::Body, http::Request};
+    use tower::ServiceExt;
 
     #[tokio::test]
     async fn test_get_contracts_against_dev_db() {
         let app = get_app().await;
-        let response = app.oneshot(Request::builder().uri("/contracts").body(Body::empty()).unwrap()).await.expect("Request Failed");
+        let response = app
+            .oneshot(
+                Request::builder()
+                    .uri("/contracts")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .expect("Request Failed");
         assert_eq!(response.status(), 200);
         let body = hyper::body::to_bytes(response.into_body()).await.unwrap();
         let contracts: Vec<ContractEntry> = serde_json::from_slice(&body).unwrap();
@@ -46,4 +50,3 @@ mod test {
         }
     }
 }
-
