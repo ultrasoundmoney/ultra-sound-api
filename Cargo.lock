@@ -1490,7 +1490,6 @@ name = "ultra-sound-api"
 version = "0.1.0"
 dependencies = [
  "axum",
- "lazy_static",
  "serde",
  "sqlx",
  "tokio",
