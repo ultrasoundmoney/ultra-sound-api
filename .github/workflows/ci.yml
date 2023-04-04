@@ -3,6 +3,9 @@ on: [push]
 
 name: CI
 
+env:
+  DATABASE_URL: { secrets.DATABASE_URL } 
+
 jobs:
   check:
     name: Check
