@@ -7,7 +7,6 @@ fn get_db_url() -> String {
 
 pub async fn get_db_pool() -> PgPool {
     let db_url = get_db_url();
-    print!("Connecting to DB: {}", db_url);
     PgPool::connect(&db_url)
         .await
         .expect("expect DB to be available to connect")

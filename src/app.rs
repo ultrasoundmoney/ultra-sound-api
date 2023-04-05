@@ -12,7 +12,6 @@ pub async fn get_app() -> Router {
 
 fn get_app_with_db_pool(db_pool: PgPool) -> Router {
     let shared_state = Arc::new(AppState { db_pool });
-    tracing_subscriber::fmt::init();
     Router::new()
         .route("/contracts", get(get_contracts))
         .with_state(shared_state)
