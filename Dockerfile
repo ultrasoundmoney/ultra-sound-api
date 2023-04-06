@@ -1,6 +1,5 @@
 FROM lukemathwalker/cargo-chef AS chef
 WORKDIR /app
-ARG database_url
 
 FROM chef AS planner
 COPY . .
@@ -14,6 +13,7 @@ RUN cargo chef cook --release --recipe-path recipe.json
 # Build application - this should be re-done every time we update our src.
 COPY . .
 
+ARG database_url
 ENV DATABASE_URL $database_url
 RUN cargo build --release
 
