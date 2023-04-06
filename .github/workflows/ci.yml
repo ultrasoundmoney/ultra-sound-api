@@ -69,7 +69,7 @@ jobs:
           tags: ${{ env.TEST_TAG }}
           build-args: |
             database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
-      - name: Test
+      - name: Test Container
         timeout-minutes: 10
         run: |
           docker run -d -p 3000:3000 -d --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }} ultra-sound-api && \
@@ -80,6 +80,15 @@ jobs:
             --retry-delay 10 \
             --retry-max-time 40 \
             'http://0.0.0.0:3000/contracts'
+      - name: Docker Build / push 
+        # uses: docker/build-push-action@v4
+        run: echo "Test"
+        if: github.ref == 'refs/heads/main'
+        # with:
+        #   context: .
+        #   push: true
+        #   build-args: |
+        #     database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
 
 
   lints:
