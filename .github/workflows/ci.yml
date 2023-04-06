@@ -81,14 +81,15 @@ jobs:
             --retry-max-time 40 \
             'http://0.0.0.0:3000/contracts'
       - name: Docker Build / push 
-        # uses: docker/build-push-action@v4
-        run: echo "Test"
+        uses: docker/build-push-action@v4
         if: github.ref == 'refs/heads/main'
-        # with:
-        #   context: .
-        #   push: true
-        #   build-args: |
-        #     database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
   lints:
