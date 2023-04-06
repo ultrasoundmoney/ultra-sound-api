@@ -70,8 +70,16 @@ jobs:
           build-args: |
             database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
       - name: Test
+        timeout-minutes: 10
         run: |
-          docker run --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }}
+          docker run -p 3000:3000 --env DATABASE_URL=$DATABASE_URL ultra-sound-api & \
+          curl --connect-timeout 5 \
+            --max-time 250 \
+            --retry 5 \
+            --retry-delay 10 \
+            --retry-max-time 40 \
+            'http://localhost:3000/contracts'
+
 
   lints:
     name: Lints
