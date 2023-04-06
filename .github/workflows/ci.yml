@@ -48,6 +48,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    name: Build / Push Container
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -67,7 +68,7 @@ jobs:
           push: false
           tags: ${{ env.TEST_TAG }}
           build-args: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
+            database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
       - name: Test
         run: |
           docker run --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }}
