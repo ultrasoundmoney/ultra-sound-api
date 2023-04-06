@@ -72,13 +72,14 @@ jobs:
       - name: Test
         timeout-minutes: 10
         run: |
-          docker run -p 3000:3000 --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }} ultra-sound-api & \
+          docker run -d -p 3000:3000 -d --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }} ultra-sound-api && \
+          sleep 10 && \
           curl --connect-timeout 5 \
             --max-time 250 \
             --retry 5 \
             --retry-delay 10 \
             --retry-max-time 40 \
-            'http://localhost:3000/contracts'
+            'http://0.0.0.0:3000/contracts'
 
 
   lints:
