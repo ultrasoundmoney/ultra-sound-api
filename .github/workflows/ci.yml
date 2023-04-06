@@ -72,7 +72,7 @@ jobs:
       - name: Test
         timeout-minutes: 10
         run: |
-          docker run -p 3000:3000 --env DATABASE_URL=$DATABASE_URL ultra-sound-api & \
+          docker run -p 3000:3000 --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }} ultra-sound-api & \
           curl --connect-timeout 5 \
             --max-time 250 \
             --retry 5 \
