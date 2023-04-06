@@ -1,0 +1,25 @@
+[package]
+name = "ultra-sound-api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = "0.6.12"
+serde = { version = "1.0.159", features = ["derive"] }
+sqlx = { version = "0.6.3", features = [
+  "json",
+  "offline",
+  "postgres",
+  "runtime-tokio-native-tls",
+] }
+tokio = { version = "1.27.0", features = ["full"] }
+tracing = "0.1.37"
+tracing-subscriber = "0.3.16"
+
+[dev-dependencies]
+hyper = { version = "0.14", features = ["full"] }
+serde_json = "1.0"
+tower-http = { version = "0.4.0", features = ["trace"] }
+tower = { version = "0.4", features = ["util"] }
