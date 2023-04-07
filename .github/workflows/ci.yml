@@ -80,6 +80,14 @@ jobs:
             --retry-delay 10 \
             --retry-max-time 40 \
             'http://0.0.0.0:3000/contracts'
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          images: rg.fr-par.scw.cloud/ultrasoundmoney/eth-analysis-rs
+          tags: |
+            type=sha,prefix=
       - name: Docker Build / push 
         uses: docker/build-push-action@v4
         if: github.ref == 'refs/heads/main'
