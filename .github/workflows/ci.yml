@@ -5,6 +5,7 @@ name: CI
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  TEST_TAG: ultra-sound-api:test
 
 jobs:
   check:
@@ -44,6 +45,52 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: test
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build / Push Container
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Scaleway Registry
+        uses: docker/login-action@v2
+        with:
+          registry: rg.fr-par.scw.cloud/ultrasoundmoney
+          username: ${{ secrets.SCALEWAY_API_KEY }}
+          password: ${{ secrets.SCALEWAY_API_KEY }}
+      - name: Docker build 
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ env.TEST_TAG }}
+          build-args: |
+            database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
+      - name: Test Container
+        timeout-minutes: 10
+        run: |
+          docker run -d -p 3000:3000 -d --env DATABASE_URL=${{ env.DATABASE_URL }} --rm ${{ env.TEST_TAG }} ultra-sound-api && \
+          sleep 10 && \
+          curl --connect-timeout 5 \
+            --max-time 250 \
+            --retry 5 \
+            --retry-delay 10 \
+            --retry-max-time 40 \
+            'http://0.0.0.0:3000/contracts'
+      - name: Docker Build / push 
+        uses: docker/build-push-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
 
   lints:
     name: Lints
