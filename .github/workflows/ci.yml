@@ -98,6 +98,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            database_url=${{ secrets.DATABASE_URL }} # This DATABASE_URL is only used for sqlx compilation actual db url is specified at runtime
 
 
   lints:
