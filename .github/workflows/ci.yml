@@ -85,7 +85,7 @@ jobs:
         uses: docker/metadata-action@v4
         if: github.ref == 'refs/heads/main'
         with:
-          images: rg.fr-par.scw.cloud/ultrasoundmoney/eth-analysis-rs
+          images: rg.fr-par.scw.cloud/ultrasoundmoney/ultra-sound-api
           tags: |
             type=sha,prefix=
       - name: Docker Build / push 
