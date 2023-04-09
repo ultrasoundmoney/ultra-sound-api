@@ -13,7 +13,7 @@ pub async fn get_app() -> Router {
 fn get_app_with_db_pool(db_pool: PgPool) -> Router {
     let shared_state = Arc::new(AppState { db_pool });
     Router::new()
-        .route("/contracts", get(get_contracts))
+        .route("v1/top-contracts", get(get_contracts))
         .with_state(shared_state)
 }
 
@@ -30,7 +30,7 @@ mod test {
         let response = app
             .oneshot(
                 Request::builder()
-                    .uri("/contracts")
+                    .uri("v1/top-contracts")
                     .body(Body::empty())
                     .unwrap(),
             )
