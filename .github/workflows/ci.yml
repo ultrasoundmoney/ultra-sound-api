@@ -79,7 +79,7 @@ jobs:
             --retry 5 \
             --retry-delay 10 \
             --retry-max-time 40 \
-            'http://0.0.0.0:3000/contracts'
+            'http://0.0.0.0:3000/v1/top-contracts'
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
